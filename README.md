@@ -21,7 +21,7 @@ Este projeto está licenciado sob a [MIT License](LICENSE). Sinta-se à vontade 
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/GustavoSilverio/manga-scraper.git
+   git clone https://github.com/GustavoSilverio/my-mangas-api.git
     ```
 2. Crie um ambiente virtual:
     ```bash
