@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from typing import List
 from models.manga import Manga
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
 app = FastAPI()
 client = MongoClient(os.environ.get("MONGO_BASE_URL"))
@@ -12,7 +13,8 @@ coll = db["manga"]
 
 origins = [
     "http://localhost",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "*"
 ]
 
 app.add_middleware(
@@ -42,4 +44,5 @@ def getAllMangas():
     return mangas_list 
 
 if __name__ == "__main__":
-    os.system("fastapi dev main.py")
+    # os.system("fastapi dev main.py")
+    uvicorn.run("main:app")
