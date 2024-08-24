@@ -45,4 +45,4 @@ def getAllMangas():
 
 if __name__ == "__main__":
     # os.system("fastapi dev main.py")
-    uvicorn.run("main:app")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
