@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from pymongo import MongoClient
 from typing import List
@@ -6,14 +7,14 @@ from models.manga import Manga
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+load_dotenv()
+
 app = FastAPI()
-client = MongoClient(os.environ.get("MONGO_BASE_URL"))
+client = MongoClient(os.get)
 db = client["my-mangas"]
 coll = db["manga"]
 
 origins = [
-    "http://localhost",
-    "http://localhost:3000",
     "*"
 ]
 
@@ -44,5 +45,4 @@ def getAllMangas():
     return mangas_list 
 
 if __name__ == "__main__":
-    # os.system("fastapi dev main.py")
     uvicorn.run(app, host="0.0.0.0", port=8000)
