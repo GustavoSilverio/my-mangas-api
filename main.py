@@ -1,22 +1,43 @@
-import os
-from dotenv import load_dotenv
-from fastapi import FastAPI
-from pymongo import MongoClient
-from typing import List
-from models.manga import Manga
-from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from os import environ
+from dotenv import load_dotenv
+from pymongo import MongoClient, TEXT
+from typing import List
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from models.manga import Manga
+from utils.query import indexedSearch
+from utils.auth import createToken, validateToken
 
 load_dotenv()
+MONGO_BASE_URL = environ.get("MONGO_BASE_URL")
+ORIGIN = environ.get("ORIGIN")
+ACCESS_KEY = environ.get("ACCESS_KEY")
 
-app = FastAPI()
-client = MongoClient(os.get)
+
+client = MongoClient(MONGO_BASE_URL)
 db = client["my-mangas"]
 coll = db["manga"]
 
-origins = [
-    "*"
-]
+coll.create_index([("nome", TEXT)])
+
+
+app = FastAPI(
+    title="my-mangas-api",
+    version="1.1.0",
+    openapi_components={
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    openapi_security=[{"BearerAuth": []}]
+)
+
+origins = [ORIGIN]
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,13 +47,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/healthy")
 def readRoot():
     return { "hello": "world" }
 
-@app.get("/mangas")
-def getAllMangas():
-    mangas_cursor = coll.find()
+@app.get("/mangas") 
+def getAllMangas(query: str | None = None, _: str = Depends(validateToken)):
+    if query:
+        mangas_cursor = indexedSearch(query, coll)
+    else:
+        mangas_cursor = coll.find()
     
     mangas_list : List[Manga] = []
     
@@ -42,7 +67,16 @@ def getAllMangas():
         manga["_id"] = str(manga["_id"])
         mangas_list.append(manga)
         
-    return mangas_list 
+    return mangas_list
+
+
+@app.post("/validate")
+def validate_key(key: str):
+    if key == ACCESS_KEY:
+        return { "isValid": True, "token": createToken() }
+    else:
+        return { "isValid": False, "token": None }
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
