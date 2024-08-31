@@ -9,5 +9,4 @@ def indexedSearch(query, coll: Collection):
     })
     
     result.sort([('score', -1)]) # Ordena por similaridade
-    
     return result

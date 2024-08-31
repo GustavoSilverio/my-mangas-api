@@ -53,9 +53,9 @@ def readRoot():
     return { "hello": "world" }
 
 @app.get("/mangas") 
-def getAllMangas(query: str | None = None, _: str = Depends(validateToken)):
-    if query:
-        mangas_cursor = indexedSearch(query, coll)
+def getAllMangas(q: str | None = None, _: str = Depends(validateToken)):
+    if q:
+        mangas_cursor = indexedSearch(q, coll)
     else:
         mangas_cursor = coll.find()
     
