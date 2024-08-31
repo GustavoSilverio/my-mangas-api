@@ -35,10 +35,20 @@ Este projeto está licenciado sob a [MIT License](LICENSE). Sinta-se à vontade 
     ```bash
     pip install -r requirements.txt
     ```
-5. Crie um arquivo .env na raiz do projeto e adicione a sua connection string na seguinte env var:
+5. Crie um arquivo .env na raiz do projeto e as seguintes variáveis:
     ```env
+    # connection string para o mongo
     MONGO_BASE_URL='mongodb+srv://USER:SENHA@********.mongodb.net/'
-    ```   
+
+    # adicione a origem de onde vai receber as requisições, normalmente em http://localhost:3000 (onde o front está rodando)
+    ORIGIN='http://localhost:3000'
+
+    # essa seria a chave de acesso para a api, coloque o valor que desejar, essa key vai ser pedida no front para poder logar
+    ACCESS_KEY='mX8JbZ7c4vNp2Qw5LdRt6Fy9KsGhVqP3jCnTkYzB'
+
+    # esse secret seria uma chave especial para criar os tokens, pode adicionar o valor que desejar
+    TOKEN_SECRET='B9wR2vG6pMdJ4kVfHn7sTqXzL8CrYm3xQa5NtKjP'
+    ```
 6. Rode o projeto:
     ```bash
     python main.py
