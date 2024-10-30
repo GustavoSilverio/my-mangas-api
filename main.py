@@ -14,7 +14,6 @@ MONGO_BASE_URL = environ.get("MONGO_BASE_URL")
 ORIGIN = environ.get("ORIGIN")
 ACCESS_KEY = environ.get("ACCESS_KEY")
 
-
 client = MongoClient(MONGO_BASE_URL)
 db = client["my-mangas"]
 coll = db["manga"]
