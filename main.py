@@ -49,7 +49,7 @@ app.add_middleware(
 
 @app.get("/healthy")
 def readRoot():
-    return { "hello": "world" }
+    return { "hello": "mundo" }
 
 @app.get("/mangas") 
 def getAllMangas(q: str | None = None, _: str = Depends(validateToken)):
