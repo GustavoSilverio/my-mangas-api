@@ -9,3 +9,8 @@ class Manga(TypedDict):
     _id: objectid
     nome: str
     capitulos: List[Capitulo]
+    
+class MangaSummary(TypedDict):
+    _id: objectid
+    nome: str
+    imgCapa: str

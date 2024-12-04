@@ -2,12 +2,14 @@ import uvicorn
 from os import environ
 from dotenv import load_dotenv
 from pymongo import MongoClient, TEXT
+from bson.objectid import ObjectId
 from typing import List
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from models.manga import Manga
-from utils.query import indexedSearch
+from utils.query import mangasSummaryByQuery
 from utils.auth import createToken, validateToken
+from utils.exceptions import raiseResponseException
 
 load_dotenv()
 MONGO_BASE_URL = environ.get("MONGO_BASE_URL")
@@ -51,12 +53,12 @@ app.add_middleware(
 def readRoot():
     return { "hello": "mundo" }
 
-@app.get("/mangas") 
+@app.get("/mangas-summary") 
 def getAllMangas(q: str | None = None, _: str = Depends(validateToken)):
     if q:
-        mangas_cursor = indexedSearch(q, coll)
+        mangas_cursor = mangasSummaryByQuery(q, coll)
     else:
-        mangas_cursor = coll.find()
+        mangas_cursor = coll.find({}, { "nome": 1, "imgCapa": 1 })
     
     mangas_list : List[Manga] = []
     
@@ -68,13 +70,21 @@ def getAllMangas(q: str | None = None, _: str = Depends(validateToken)):
         
     return mangas_list
 
+@app.get("/manga/{id}")
+def getMangaById(id: str, _: str = Depends(validateToken)):
+    manga = coll.find_one({ "_id": ObjectId(id) })
+    
+    manga["_id"] = str(manga["_id"])
+    
+    return manga  
+    
 
 @app.post("/validate")
 def validate_key(key: str):
     if key == ACCESS_KEY:
         return { "isValid": True, "token": createToken() }
     else:
-        return { "isValid": False, "token": None }
+        raiseResponseException(400, "Key provided not valid", "key.not-valid")
 
 
 if __name__ == "__main__":
