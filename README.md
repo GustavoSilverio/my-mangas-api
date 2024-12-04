@@ -48,6 +48,9 @@ Este projeto está licenciado sob a [MIT License](LICENSE). Sinta-se à vontade 
 
     # esse secret seria uma chave especial para criar os tokens, pode adicionar o valor que desejar
     TOKEN_SECRET='B9wR2vG6pMdJ4kVfHn7sTqXzL8CrYm3xQa5NtKjP'
+
+    # quantidade de horas que o token tem até expirar
+    TOKEN_EXPIRATION_HOURS=5
     ```
 6. Rode o projeto:
     ```bash
